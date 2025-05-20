@@ -10,10 +10,17 @@ import org.springframework.http.MediaType;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import ru.akartashov93.weatheraggregator.model.NormalizedWeatherData;
+import ru.akartashov93.weatheraggregator.model.RawWeatherData;
+import ru.akartashov93.weatheraggregator.repository.NormalizedWeatherDataRepository;
+import ru.akartashov93.weatheraggregator.repository.RawWeatherDataRepository;
 import ru.akartashov93.weatheraggregator.service.dto.AverageWeather;
 import ru.akartashov93.weatheraggregator.service.integration.impl.WeatherIntegrationAService;
 import ru.akartashov93.weatheraggregator.service.integration.impl.WeatherIntegrationBService;
 import ru.akartashov93.weatheraggregator.service.integration.impl.WeatherIntegrationCService;
+
+import java.util.List;
+import java.util.stream.StreamSupport;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -34,6 +41,11 @@ class WeatherAggregatorApplicationTests {
     private WeatherIntegrationBService weatherIntegrationBService;
     @MockitoBean
     private WeatherIntegrationCService weatherIntegrationCService;
+
+    @Autowired
+    private NormalizedWeatherDataRepository normalizedWeatherDataRepository;
+    @Autowired
+    private RawWeatherDataRepository rawWeatherDataRepository;
 
     @Test
     void test() throws Exception {
@@ -57,6 +69,25 @@ class WeatherAggregatorApplicationTests {
         AverageWeather averageWeather = objectMapper.readValue(json, AverageWeather.class);
         Assertions.assertEquals(2.1, averageWeather.getAverageTemperature());
         Assertions.assertEquals(55.1, averageWeather.getAverageHumidity());
+
+        List<NormalizedWeatherData> normalizedData =
+                StreamSupport.stream(normalizedWeatherDataRepository.findAll().spliterator(), false)
+                .toList();
+        Assertions.assertEquals(100, normalizedData.size());
+
+        NormalizedWeatherData firstNormalized = normalizedData.get(0);
+        Assertions.assertNotNull(firstNormalized.getSourceId());
+        Assertions.assertEquals(2.1, firstNormalized.getTemperature());
+        Assertions.assertEquals(55.1, firstNormalized.getHumidity());
+
+        List<RawWeatherData> rawData =
+                StreamSupport.stream(rawWeatherDataRepository.findAll().spliterator(), false)
+                .toList();
+        Assertions.assertEquals(100, rawData.size());
+
+        RawWeatherData firstRaw = rawData.get(0);
+        Assertions.assertNotNull(firstRaw.getSourceId());
+        Assertions.assertNotNull(firstRaw.getPayload());
     }
 
 }
