@@ -22,7 +22,6 @@ import ru.akartashov93.weatheraggregator.service.integration.impl.WeatherIntegra
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -49,13 +48,13 @@ class WeatherAggregatorApplicationTests {
 
     @Test
     void test() throws Exception {
-        when(weatherIntegrationAService.getWeather(any())).thenReturn(
+        when(weatherIntegrationAService.getWeather()).thenReturn(
                 "{ \"temp\": 2.1, \"hum\": 55.1 }"
         );
-        when(weatherIntegrationBService.getWeather(any())).thenReturn(
+        when(weatherIntegrationBService.getWeather()).thenReturn(
                 "{ \"temperature\": \"2.1\", \"humidity\": \"55.1\" }"
         );
-        when(weatherIntegrationCService.getWeather(any())).thenReturn(
+        when(weatherIntegrationCService.getWeather()).thenReturn(
                 "{ \"weather\": { \"t\": 2.1, \"h\": 55.1 } }"
         );
 

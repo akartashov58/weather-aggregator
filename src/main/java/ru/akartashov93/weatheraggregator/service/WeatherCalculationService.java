@@ -68,7 +68,7 @@ public class WeatherCalculationService {
         return () -> {
             try {
                 WeatherIntegrator integrator = weatherFactory.getWeatherIntegrator(sourceId);
-                String payload = integrator.getExecutor().getWeather(sourceId);
+                String payload = integrator.getExecutor().getWeather();
                 rawWeatherDataService.create(sourceId, payload);
                 WeatherPayloadNormalizer normalizer = integrator.getPayloadNormalizer();
                 WeatherData data = normalizer.normalize(payload);

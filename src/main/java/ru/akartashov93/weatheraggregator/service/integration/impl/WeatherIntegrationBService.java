@@ -19,7 +19,7 @@ public class WeatherIntegrationBService implements WeatherIntegrationExecutor {
     private final RestTemplate restTemplate;
 
     @Override
-    public String getWeather(Integer sourceId) {
+    public String getWeather() {
         return restTemplate.exchange(
                 new RequestEntity<>(HttpMethod.GET, URI.create("https://localhost/integration-b/source/{id}")),
                 String.class
